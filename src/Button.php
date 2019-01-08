@@ -32,6 +32,8 @@ class Button extends Field
 
     public $indexName = null;
 
+    public $showInToolbar = false;
+
     public $route = null;
 
     public $link = null;
@@ -51,7 +53,7 @@ class Button extends Field
 
         $this->classes[] = 'nova-button-' . strtolower(class_basename($resource));
 
-        if ($this->visible == false) {
+        if ($this->visible == false || $this->showInToolbar == true) {
             $this->canSee(function () {
                 return false;
             });
@@ -73,6 +75,7 @@ class Button extends Field
             'indexAlign' => $this->indexAlign,
             'errorMessage' => $this->errorMessage,
             'successMessage' => $this->successMessage,
+            'showInToolbar' => $this->showInToolbar,
         ]);
     }
     
@@ -100,6 +103,13 @@ class Button extends Field
     public function visible($condition)
     {
         $this->visible = $condition;
+
+        return $this;
+    }
+
+    public function showInToolbar($show = true)
+    {
+        $this->showInToolbar = $show;
 
         return $this;
     }
