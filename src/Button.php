@@ -53,7 +53,7 @@ class Button extends Field
 
         $this->classes[] = 'nova-button-' . strtolower(class_basename($resource));
 
-        if ($this->visible == false || $this->showInToolbar == true) {
+        if ($this->visible == false) {
             $this->canSee(function () {
                 return false;
             });
@@ -88,7 +88,7 @@ class Button extends Field
 
     public function classes($classes)
     {
-        $this->classes = $classes;
+        $this->classes[] = $classes;
 
         return $this;
     }

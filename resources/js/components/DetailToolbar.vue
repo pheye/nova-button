@@ -2,8 +2,11 @@
     <div class="flex w-full justify-end items-center">
         <component 
             v-for="button in buttons"
-            :is="button.component"
             :key="button.id"
+            :is="button.component"
+            :resourceName="resourceName"
+            :resourceId="resourceId"
+            :resource="resource"
             :field="button"
         />
     </div>
