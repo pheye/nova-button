@@ -7,11 +7,11 @@ use Laravel\Nova\Fields\Field;
 class Button extends Field
 {
     public $style = null;
-    
+
     public $classes = [];
 
     public $reload = false;
-    
+
     public $visible = true;
 
     public $showOnUpdate = false;
@@ -35,13 +35,13 @@ class Button extends Field
     public $link = null;
 
     public $confirm = null;
-    
+
     public $indexAlign = 'right';
 
     public $errorText = null;
-    
+
     public $errorClasses = null;
-    
+
     public $loadingText = null;
 
     public $loadingClasses = null;
@@ -61,6 +61,7 @@ class Button extends Field
 
     public function resolve($resource, $attribute = null)
     {
+        dd($resource);
         parent::resolve($resource, $attribute);
 
         $this->classes[] = 'nova-button-' . strtolower(class_basename($resource));
@@ -68,7 +69,7 @@ class Button extends Field
         $this->loadingClasses = array_get($this->config, "styles.{$this->loadingStyle}");
         $this->successClasses = array_get($this->config, "styles.{$this->successStyle}");
         $this->errorClasses = array_get($this->config, "styles.{$this->errorStyle}");
-        
+
         $this->withMeta([
             'key' => $this->key,
             'type' => $this->type,
@@ -91,7 +92,7 @@ class Button extends Field
             'loadingClasses' => $this->loadingClasses,
         ]);
     }
-    
+
     public function style($style)
     {
         $this->style = $style;
@@ -240,6 +241,19 @@ class Button extends Field
         return $this;
     }
 
+    public function attach($namespace)
+    {
+        // attach('App\Nova\Account', 'App\Nova\User')
+        // attach($this, 'App\Nova\User');
+        $this->route('attach', [
+            'resourceName' => 'accounts',
+            'resourceId' => '1',
+            'relatedResourceName' => $namespace,
+        ], ['viaRelationship' => $namespace]);
+
+        return $this;
+    }
+
     public function lens($namespace, $key)
     {
         $this->route('lens', [
@@ -258,25 +272,42 @@ class Button extends Field
         return $this;
     }
 
-    public function route($name, $params)
+    public function route($name, $params, $query = [])
     {
         $this->type = 'route';
 
         $this->route = [
             'name' => $name,
-            'params' => $params
+            'params' => $params,
+            'query' => $query,
         ];
-            
-        $this->formatResourceName();
-        
+
+        $this->resolveNamespaces();
+
         return $this;
     }
 
-    public function formatResourceName()
+    public function resolveNamespaces()
     {
-        $this->route['params']['resourceName'] = strtolower(
-            str_plural(class_basename($this->route['params']['resourceName']))
-        );
+        $params = ['resourceName', 'relatedResourceName'];
+
+        foreach ($params as $param) {
+            if(isset($this->route['params'][$param])) {
+                $this->route['params'][$param] = strtolower(
+                    str_plural(class_basename($this->route['params'][$param]))
+                );
+            }
+        }
+
+        $queries = ['viaRelationship'];
+
+        foreach ($queries as $query) {
+            if(isset($this->route['query'][$query])) {
+                $this->route['query'][$query] = strtolower(
+                    str_plural(class_basename($this->route['query'][$query]))
+                );
+            }
+        }
     }
 
     public function addDefaultSettings()
