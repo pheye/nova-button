@@ -52,12 +52,14 @@ class Button extends Field
 
     public $successClasses = null;
 
-    public function __construct($name, $key = null)
+    public function __construct($name, $key = null, $attribute = null)
     {
         $this->name = $name;
         $this->text = $name;
         $this->key = $key ?? kebab_case($name);
         $this->config = config('nova-button');
+        if ($attribute)
+            $this->attribute = $attribute;
         $this->addDefaultSettings();
     }
 

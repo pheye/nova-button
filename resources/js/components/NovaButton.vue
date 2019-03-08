@@ -55,7 +55,7 @@ export default {
     mounted()
     {
         this.$nextTick(function(){
-            this.buttonWidth = this.$refs.novabutton.clientWidth + 2 + 'px';
+            this.buttonWidth = this.field.buttonWidth ? this.field.buttonWidth :  this.$refs.novabutton.clientWidth + 2 + 'px';
         })
     },
     methods: {
@@ -116,7 +116,7 @@ export default {
                 return this.field.loadingText;
             }
 
-            return this.field.text;
+            return this.field.value;
         },
         buttonClasses: function() {
 
